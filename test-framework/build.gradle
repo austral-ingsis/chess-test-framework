@@ -16,7 +16,7 @@ plugins {
 
 
 group = "edu.austral.dissis.chess"
-version = "1.0.0"
+version = "1.1.0"
 
 repositories {
     mavenLocal()
@@ -39,6 +39,13 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
     }
+    withJavadocJar()
+}
+
+// Define a task for creating a sources jar
+task sourcesJar(type: Jar, dependsOn: classes) {
+    archiveClassifier.set('sources')
+    from sourceSets.main.allSource
 }
 
 tasks.named('test') {
@@ -62,6 +69,7 @@ publishing {
     publications {
         maven(MavenPublication) {
             from components.java
+            artifact(sourcesJar)  // Attach the explicitly defined sources jar
         }
     }
 }
