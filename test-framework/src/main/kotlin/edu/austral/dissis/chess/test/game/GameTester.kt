@@ -30,7 +30,7 @@ class GameTester(private val runner: TestGameRunner) {
                     it is TestMoveFailure && checkFinalBoardMatches(it.finalBoard, testGame.finalBoard) }
                 TestGameResult.WHITE_MATE -> assertLastMove(testGame) {
                     it is WhiteCheckMate && checkFinalBoardMatches(it.finalBoard, testGame.finalBoard) }
-                TestGameResult.BLACK_MATE -> assertLastMove(testGame) { 
+                TestGameResult.BLACK_MATE -> assertLastMove(testGame) {
                     it is BlackCheckMate && checkFinalBoardMatches(it.finalBoard, testGame.finalBoard) }
                 TestGameResult.DRAW -> assertLastMove(testGame) {
                     it is TestMoveDraw && checkFinalBoardMatches(it.finalBoard, testGame.finalBoard) }
@@ -67,7 +67,7 @@ class GameTester(private val runner: TestGameRunner) {
     }
 
     private fun checkFinalBoardMatches(actualBoard: TestBoard, expectedBoard: TestBoard): Boolean {
-        return actualBoard != expectedBoard
+        return actualBoard == expectedBoard
     }
 
     private fun content(resource: String): String? {
