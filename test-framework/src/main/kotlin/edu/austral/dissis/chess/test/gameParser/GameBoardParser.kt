@@ -67,7 +67,7 @@ class GameBoardParser {
         1 |WR|WN|WB|WQ|WK|WB|WN|WR|
         ```
         */
-        return parseBoard("# Starting board", lines, size)
+        return parseBoard(header = "# Starting board", lines, size)
     }
 
     private fun parseFinalBoard(lines: List<String>, size: TestSize): TestBoard {
@@ -87,7 +87,7 @@ class GameBoardParser {
         1 |WR|WN|WB|WQ|WK|WB|WN|WR|
         ```
         */
-        return parseBoard("# Final board", lines, size)
+        return parseBoard(header = "# Final board", lines, size)
     }
 
     private fun parseBoard(
