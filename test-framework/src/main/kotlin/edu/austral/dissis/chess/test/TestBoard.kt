@@ -6,7 +6,7 @@ data class TestBoard(val size: TestSize, val pieces: Map<TestPosition, TestPiece
         val maxColumn = 8  // Assuming an 8x8 board, adjust if needed
         val maxRow = 8     // Assuming an 8x8 board, adjust if needed
         // Top-down, since row 8 is at the top for standard chess boards
-        for (column in maxColumn downTo 1) {
+        for (column in 1 .. maxColumn) {
             for (row in 1..maxRow) {
                 val position = TestPosition.fromZeroBased(column - 1, row - 1)
                 val piece = pieces.get(position)
