@@ -59,10 +59,10 @@ class GameTester(private val runner: TestGameRunner) {
         val lastMove = testGame.movements.last()
         val finalRunner = runMoves(testGame.title, initialRunner, preparatoryMoves)
         when (val result = finalRunner.executeMove(lastMove.first, lastMove.second)) {
-            is TestMoveSuccess -> fail("$testGame.title failed, last move should result in game end but did not")
+            is TestMoveSuccess -> fail("${testGame.title} failed, last move should result in game end but did not")
             is FinalTestMoveResult -> {
                 if (!checkResult(result)) {
-                    fail("$testGame.title failed, last move did not result in expected outcome")
+                    fail("${testGame.title} failed, last move did not result in expected outcome")
                 }
                 checkFinalBoardMatches(result.finalBoard, testGame.finalBoard)
             }
