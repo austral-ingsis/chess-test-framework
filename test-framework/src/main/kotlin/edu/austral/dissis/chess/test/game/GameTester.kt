@@ -15,7 +15,7 @@ class GameTester(private val runner: TestGameRunner) {
     private val parser: GameBoardParser = GameBoardParser()
 
     fun test(): Stream<DynamicTest> {
-       return getTestPaths().stream().map { gameTest(it) }
+        return getTestPaths().stream().map { gameTest(it) }
     }
 
     private fun gameTest(resource: String): DynamicTest {
@@ -34,7 +34,11 @@ class GameTester(private val runner: TestGameRunner) {
         }
     }
 
-    private fun runMoves(title: String, runner: TestGameRunner, moves: List<Pair<TestPosition, TestPosition>>): TestGameRunner {
+    private fun runMoves(
+        title: String,
+        runner: TestGameRunner,
+        moves: List<Pair<TestPosition, TestPosition>>
+    ): TestGameRunner {
         return moves.fold(runner) { currentRunner, (from, to) ->
             when (val result = currentRunner.executeMove(from, to)) {
                 is TestMoveSuccess -> result.testGameRunner
@@ -45,17 +49,31 @@ class GameTester(private val runner: TestGameRunner) {
 
     private fun assertAllMovesValid(testGame: TestGame) {
         val initialRunner = runner.withBoard(testGame.initialBoard)
-        runMoves(testGame.title, initialRunner, testGame.movements)
+        val resultingRunner = runMoves(testGame.title, initialRunner, testGame.movements)
+        checkFinalBoardMatches(resultingRunner.getBoard(), testGame.finalBoard)
     }
 
-    private fun assertLastMove(testGame: TestGame, checkResult: (TestMoveResult) -> Boolean) {
+    private fun assertLastMove(testGame: TestGame, checkResult: (FinalTestMoveResult) -> Boolean) {
         val initialRunner = runner.withBoard(testGame.initialBoard)
         val preparatoryMoves = testGame.movements.dropLast(1)
         val lastMove = testGame.movements.last()
         val finalRunner = runMoves(testGame.title, initialRunner, preparatoryMoves)
-        val result = finalRunner.executeMove(lastMove.first, lastMove.second)
-        if (!checkResult(result)) {
-            fail("$testGame.title failed, last move did not result in expected outcome")
+        when (val result = finalRunner.executeMove(lastMove.first, lastMove.second)) {
+            is TestMoveSuccess -> fail("$testGame.title failed, last move should result in game end but did not")
+            is FinalTestMoveResult -> {
+                if (!checkResult(result)) {
+                    fail("$testGame.title failed, last move did not result in expected outcome")
+                }
+                checkFinalBoardMatches(result.finalBoard, testGame.finalBoard)
+            }
+        }
+
+
+    }
+
+    private fun checkFinalBoardMatches(actualBoard: TestBoard, expectedBoard: TestBoard) {
+        if (actualBoard != expectedBoard) {
+            fail("\n$actualBoard\n did not match expected board \n$expectedBoard\n")
         }
     }
 
@@ -84,7 +102,7 @@ class GameTester(private val runner: TestGameRunner) {
             Files.walk(path, 1).use { paths ->
                 paths.filter { p -> Files.isRegularFile(p) }
                     .forEach { p: Path ->
-                        testPaths.add("/test_cases/${p.fileName.toString()}")
+                        testPaths.add("/test_cases/${p.fileName}")
                     }
             }
         } ?: println("Resource not found: $resourcePath")

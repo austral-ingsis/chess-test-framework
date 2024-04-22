@@ -4,11 +4,15 @@ import edu.austral.dissis.chess.test.TestBoard
 import edu.austral.dissis.chess.test.TestPosition
 
 sealed interface TestMoveResult
+
+sealed interface FinalTestMoveResult : TestMoveResult {
+    val finalBoard: TestBoard
+}
 data class TestMoveSuccess(val testGameRunner: TestGameRunner) : TestMoveResult
-data object TestMoveDraw : TestMoveResult
-data object WhiteCheckMate : TestMoveResult
-data object BlackCheckMate : TestMoveResult
-data object TestMoveFailure : TestMoveResult
+data class TestMoveDraw(override val finalBoard: TestBoard) : FinalTestMoveResult
+data class WhiteCheckMate(override val finalBoard: TestBoard) : FinalTestMoveResult
+data class BlackCheckMate(override val finalBoard: TestBoard) : FinalTestMoveResult
+data class TestMoveFailure(override val finalBoard: TestBoard) : FinalTestMoveResult
 
 interface TestGameRunner {
 
@@ -16,4 +20,5 @@ interface TestGameRunner {
 
     fun executeMove(from: TestPosition, to: TestPosition): TestMoveResult
 
+    fun getBoard(): TestBoard
 }

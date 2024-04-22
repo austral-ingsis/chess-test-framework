@@ -1,6 +1,11 @@
 package edu.austral.dissis.chess.test
 
-data class TestPiece(val pieceTypeSymbol: Char, val playerColorSymbol: Char)
+data class TestPiece(val pieceTypeSymbol: Char, val playerColorSymbol: Char) {
+    override fun toString(): String {
+        return "$playerColorSymbol$pieceTypeSymbol"
+    }
+
+}
 
 object TestPieceSymbols {
     // Player colors

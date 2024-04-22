@@ -29,3 +29,15 @@ height = 8
 # Result
 `WHITE_MATE`
 
+# Final board
+```
+   a  b  c  d  e  f  g  h
+1 |WR|WN|WB|  |WK|  |WN|WR|
+2 |WP|WP|WP|WP|  |WP|WP|WP|
+3 |  |  |  |  |WP|  |  |  |
+4 |  |  |WB|  |  |  |  |  |
+5 |  |  |  |  |BP|  |  |  |
+6 |  |  |  |  |  |BN|  |  |
+7 |BP|BP|BP|BP|  |WQ|BP|BP|
+8 |BR|BN|BB|BQ|BK|BB|  |BR|
+```
