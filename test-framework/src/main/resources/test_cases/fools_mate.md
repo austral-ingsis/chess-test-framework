@@ -19,7 +19,7 @@ a  b  c  d  e  f  g  h
 # Moves
 1. f2-f3
 2. e7-e5
-3. g2-g3
+3. g2-g4
 4. d8-h4
 
 # Result
@@ -30,8 +30,8 @@ a  b  c  d  e  f  g  h
    a  b  c  d  e  f  g  h
 1 |WR|WN|WB|WQ|WK|WB|WN|WR|
 2 |WP|WP|WP|WP|WP|  |  |WP|
-3 |  |  |  |  |  |WP|WP|  |
-4 |  |  |  |  |  |  |  |BQ|
+3 |  |  |  |  |  |WP|  |  |
+4 |  |  |  |  |  |  |WP|BQ|
 5 |  |  |  |  |BP|  |  |  |
 6 |  |  |  |  |  |  |  |  |
 7 |BP|BP|BP|BP|  |BP|BP|BP|
