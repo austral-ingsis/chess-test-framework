@@ -26,10 +26,14 @@ class GameTester(private val runner: TestGameRunner) {
         return DynamicTest.dynamicTest(testGame.title) {
             when (testGame.testResult) {
                 TestGameResult.ALL_MOVES_VALID -> assertAllMovesValid(testGame)
-                TestGameResult.LAST_MOVE_INVALID -> assertLastMove(testGame) { it is TestMoveFailure }
-                TestGameResult.WHITE_MATE -> assertLastMove(testGame) { it is WhiteCheckMate }
-                TestGameResult.BLACK_MATE -> assertLastMove(testGame) { it is BlackCheckMate }
-                TestGameResult.DRAW -> assertLastMove(testGame) { it is TestMoveDraw }
+                TestGameResult.LAST_MOVE_INVALID -> assertLastMove(testGame) {
+                    it is TestMoveFailure && checkFinalBoardMatches(it.finalBoard, testGame.finalBoard) }
+                TestGameResult.WHITE_MATE -> assertLastMove(testGame) {
+                    it is WhiteCheckMate && checkFinalBoardMatches(it.finalBoard, testGame.finalBoard) }
+                TestGameResult.BLACK_MATE -> assertLastMove(testGame) {
+                    it is BlackCheckMate && checkFinalBoardMatches(it.finalBoard, testGame.finalBoard) }
+                TestGameResult.DRAW -> assertLastMove(testGame) {
+                    it is TestMoveDraw && checkFinalBoardMatches(it.finalBoard, testGame.finalBoard) }
             }
         }
     }
@@ -45,7 +49,10 @@ class GameTester(private val runner: TestGameRunner) {
 
     private fun assertAllMovesValid(testGame: TestGame) {
         val initialRunner = runner.withBoard(testGame.initialBoard)
-        runMoves(testGame.title, initialRunner, testGame.movements)
+        val resultingRunner = runMoves(testGame.title, initialRunner, testGame.movements)
+        if (!checkFinalBoardMatches(resultingRunner.getBoard(), testGame.finalBoard)) {
+            fail("${testGame.title} failed, final board did not match expected board")
+        }
     }
 
     private fun assertLastMove(testGame: TestGame, checkResult: (TestMoveResult) -> Boolean) {
@@ -57,6 +64,10 @@ class GameTester(private val runner: TestGameRunner) {
         if (!checkResult(result)) {
             fail("$testGame.title failed, last move did not result in expected outcome")
         }
+    }
+
+    private fun checkFinalBoardMatches(actualBoard: TestBoard, expectedBoard: TestBoard): Boolean {
+        return actualBoard == expectedBoard
     }
 
     private fun content(resource: String): String? {

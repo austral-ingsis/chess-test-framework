@@ -13,15 +13,17 @@ class GameBoardParser {
 
         val title = parseTitle(lines)
         val size = parseSize(lines)
-        val board = parseBoard(lines, size)
+        val board = parseStartingBoard(lines, size)
         val movements = parseMoves(lines)
         val result = parseResult(lines)
+        val finalBoard = parseFinalBoard(lines, size)
 
         return TestGame(
             title,
             board,
             movements,
-            result
+            result,
+            finalBoard
         )
     }
 
@@ -48,7 +50,7 @@ class GameBoardParser {
         return TestSize(height, width)
     }
 
-    private fun parseBoard(lines: List<String>, size: TestSize): TestBoard {
+    private fun parseStartingBoard(lines: List<String>, size: TestSize): TestBoard {
         /*
         * Format is:
         *
@@ -65,7 +67,35 @@ class GameBoardParser {
         1 |WR|WN|WB|WQ|WK|WB|WN|WR|
         ```
         */
-        val headerLine = lines.indexOfFirst { it.startsWith("# Starting board") }
+        return parseBoard("# Starting board", lines, size)
+    }
+
+    private fun parseFinalBoard(lines: List<String>, size: TestSize): TestBoard {
+        /*
+        * Format is:
+        *
+        # Final board
+        ```
+           a  b  c  d  e  f  g  h
+        8 |BR|BN|BB|BQ|BK|BB|BN|BR|
+        7 |BP|BP|BP|BP|BP|BP|BP|BP|
+        6 |  |  |  |  |  |  |  |  |
+        5 |  |  |  |  |  |  |  |  |
+        4 |  |  |  |  |  |  |  |  |
+        3 |  |  |  |  |  |  |  |  |
+        2 |WP|WP|WP|WP|WP|WP|WP|WP|
+        1 |WR|WN|WB|WQ|WK|WB|WN|WR|
+        ```
+        */
+        return parseBoard("# Final board", lines, size)
+    }
+
+    private fun parseBoard(
+        header: String,
+        lines: List<String>,
+        size: TestSize
+    ): TestBoard {
+        val headerLine = lines.indexOfFirst { it.startsWith(header) }
         val boardLines = lines.subList(headerLine + 3, headerLine + 3 + size.rows)
         val squareContents: Map<TestPosition, String> = matrixParser.parseMatrix(boardLines)
         val pieces = squareContents.flatMap { parseSquare(it.key, it.value) }
