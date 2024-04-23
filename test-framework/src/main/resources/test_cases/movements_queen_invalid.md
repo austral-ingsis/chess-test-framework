@@ -1,4 +1,4 @@
-# Queen valid movements
+# Queen invalid movements
 
 # Size
 width = 8

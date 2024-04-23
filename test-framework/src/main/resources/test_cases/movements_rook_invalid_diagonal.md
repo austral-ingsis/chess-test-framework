@@ -1,4 +1,4 @@
-# Rook valid movements
+# Rook invalid diagonal movement
 
 # Size
 width = 8
