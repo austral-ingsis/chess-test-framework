@@ -17,7 +17,7 @@ height = 8
 8 |BK|  |  |  |  |  |  |  |
 ```
 # Moves
-1. b4-d5
+1. b4-c5
 
 
 # Result
