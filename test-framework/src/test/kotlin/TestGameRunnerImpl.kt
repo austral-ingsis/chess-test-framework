@@ -39,7 +39,7 @@ class TestGameRunnerImpl : TestGameRunner {
         val newBoard = gameBoard.clone()
         val fromSquare = adapter.testPositionToSquare(from)
         val toSquare = adapter.testPositionToSquare(to)
-        return if (newBoard.doMove(Move(fromSquare, toSquare))) {
+        return if (newBoard.doMove(Move(fromSquare, toSquare), true)) {
             if (newBoard.isMated) {
                 return if (newBoard.sideToMove == Side.WHITE) {
                     BlackCheckMate(adapter.boardToTestBoard(newBoard))

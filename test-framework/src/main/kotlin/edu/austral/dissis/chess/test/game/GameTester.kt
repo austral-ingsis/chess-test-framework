@@ -42,7 +42,7 @@ class GameTester(private val runner: TestGameRunner) {
         return moves.fold(runner) { currentRunner, (from, to) ->
             when (val result = currentRunner.executeMove(from, to)) {
                 is TestMoveSuccess -> result.testGameRunner
-                else -> fail("$title failed with move from $from to $to should be valid but was not")
+                is FinalTestMoveResult -> fail(failedMoveMessage(title, from, to, result))
             }
         }
     }
@@ -108,6 +108,25 @@ class GameTester(private val runner: TestGameRunner) {
         } ?: println("Resource not found: $resourcePath")
 
         return testPaths
+    }
+
+    private fun failedMoveMessage(
+        title: String,
+        from: TestPosition,
+        to: TestPosition,
+        result: FinalTestMoveResult
+    ): String {
+
+        // take 1-based int and return a string  with the char. a for 1, b for 2, etc.
+        val fromFile = ('a'.code + from.col -1 ).toChar()
+        val fromRank = from.row
+
+        val toFile = ('a'.code + to.col -1 ).toChar()
+        val toRank = to.row
+
+        val pieceType = result.finalBoard.pieces[from].toString()
+
+        return "$title failed, moving $pieceType from $fromFile$fromRank to $toFile$toRank"
     }
 
 
