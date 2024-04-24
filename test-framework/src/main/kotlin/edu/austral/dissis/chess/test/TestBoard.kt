@@ -21,4 +21,14 @@ data class TestBoard(val size: TestSize, val pieces: Map<TestPosition, TestPiece
         }
         return builder.toString()
     }
+
+    override fun equals(other: Any?): Boolean {
+        return this.toString() == other.toString()
+    }
+
+    override fun hashCode(): Int {
+        var result = size.hashCode()
+        result = 31 * result + pieces.hashCode()
+        return result
+    }
 }

@@ -18,6 +18,10 @@ class GameTester(private val runner: TestGameRunner) {
         return getTestPaths().stream().map { gameTest(it) }
     }
 
+    fun debug(fileName: String): Stream<DynamicTest> {
+        return gameTest("/test_cases/$fileName").let { Stream.of(it) }
+    }
+
     private fun gameTest(resource: String): DynamicTest {
 
         val content = content(resource) ?: fail("$resource not found in classpath")
