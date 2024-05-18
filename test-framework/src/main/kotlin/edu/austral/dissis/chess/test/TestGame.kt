@@ -1,9 +1,11 @@
 package edu.austral.dissis.chess.test
 
+import edu.austral.dissis.chess.test.game.TestInput
+
 class TestGame(
     val title: String,
     val initialBoard: TestBoard,
-    val movements: List<Pair<TestPosition, TestPosition>>,
+    val inputs: List<TestInput>,
     val testResult: TestGameResult,
     val finalBoard: TestBoard
 )

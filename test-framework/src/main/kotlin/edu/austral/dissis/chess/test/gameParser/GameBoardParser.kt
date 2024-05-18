@@ -1,6 +1,10 @@
 package edu.austral.dissis.chess.test.gameParser
 
 import edu.austral.dissis.chess.test.*
+import edu.austral.dissis.chess.test.game.TestInput
+import edu.austral.dissis.chess.test.game.TestMove
+import edu.austral.dissis.chess.test.game.Redo
+import edu.austral.dissis.chess.test.game.Undo
 import edu.austral.dissis.chess.test.parserUtils.MatrixParser
 
 class GameBoardParser {
@@ -14,14 +18,14 @@ class GameBoardParser {
         val title = parseTitle(lines)
         val size = parseSize(lines)
         val board = parseStartingBoard(lines, size)
-        val movements = parseMoves(lines)
+        val inputs = parseInputs(lines)
         val result = parseResult(lines)
         val finalBoard = parseFinalBoard(lines, size)
 
         return TestGame(
             title,
             board,
-            movements,
+            inputs,
             result,
             finalBoard
         )
@@ -102,14 +106,16 @@ class GameBoardParser {
         return createBoard(size, pieces)
     }
 
-    private fun parseMoves(lines: List<String>): List<Pair<TestPosition, TestPosition>> {
+    private fun parseInputs(lines: List<String>): List<TestInput> {
         /*
         * Format is:
 
         # Moves
-        1. e2 e4
-        2. e7 e5
-        3. g1 f3
+        1. e2-e4
+        2. e7-e5
+        3. UNDO
+        4. REDO
+        5. g1-f3
 
         * */
         val headerLine = lines.indexOfFirst { it.startsWith("# Moves") }
@@ -119,8 +125,16 @@ class GameBoardParser {
         val moves = lines.subList(headerLine + 1, headerLine + nextEmptyLine)
         return moves
             .map { it.split(" ")[1] }
-            .map { it.split("-") }
-            .map { Pair(TestPosition.fromAlgebraic(it[0]), TestPosition.fromAlgebraic(it[1])) }
+            .map {
+                when (it) {
+                    "UNDO" -> Undo
+                    "REDO" -> Redo
+                    else -> {
+                        val parts = it.split("-")
+                        TestMove(TestPosition.fromAlgebraic(parts[0]), TestPosition.fromAlgebraic(parts[1]))
+                    }
+                }
+            }
     }
 
     private fun parseResult(lines: List<String>): TestGameResult {

@@ -9,6 +9,7 @@ class TestGameRunnerImpl : TestGameRunner {
 
     private val adapter = ModelAdapter()
     private var gameBoard = Board()
+    private var history = RunnersHistory()
 
     constructor() {
         val newBoard = Board()
@@ -16,11 +17,16 @@ class TestGameRunnerImpl : TestGameRunner {
         this.gameBoard = newBoard
     }
 
-    private constructor(gameBoard: Board) : this() {
+    private constructor(gameBoard: Board, history: RunnersHistory) : this() {
         this.gameBoard = gameBoard
+        this.history = history
     }
 
-    override fun withBoard(board: TestBoard): TestGameRunner {
+    fun withHistory(history: RunnersHistory): TestGameRunnerImpl {
+        return TestGameRunnerImpl(gameBoard, history)
+    }
+
+    override fun withBoard(board: TestBoard): edu.austral.dissis.chess.test.game.TestGameRunner {
         val newBoard = Board()
         newBoard.clear()
         board
@@ -32,7 +38,7 @@ class TestGameRunnerImpl : TestGameRunner {
                     adapter.testPositionToSquare(position)
                 )
             }
-        return TestGameRunnerImpl(newBoard)
+        return TestGameRunnerImpl(newBoard, RunnersHistory())
     }
 
     override fun executeMove(from: TestPosition, to: TestPosition): TestMoveResult {
@@ -47,10 +53,18 @@ class TestGameRunnerImpl : TestGameRunner {
                     WhiteCheckMate(adapter.boardToTestBoard(newBoard))
                 }
             }
-            TestMoveSuccess(TestGameRunnerImpl(newBoard))
+            TestMoveSuccess(TestGameRunnerImpl(newBoard, history.add(this)))
         } else {
             TestMoveFailure(adapter.boardToTestBoard(newBoard))
         }
+    }
+
+    override fun undo(): TestMoveResult {
+        return TestMoveSuccess(history.undo(this))
+    }
+
+    override fun redo(): TestMoveResult {
+        return TestMoveSuccess(history.redo())
     }
 
     override fun getBoard(): TestBoard {
