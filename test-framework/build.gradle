@@ -57,6 +57,11 @@ tasks.named('test') {
 }
 
 // Publish settings
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 publishing {
     repositories {
         maven {
