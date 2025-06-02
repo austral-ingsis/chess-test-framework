@@ -20,13 +20,9 @@ interface TestGameRunner {
 
     fun executeMove(from: TestPosition, to: TestPosition): TestMoveResult
 
-    fun undo(): TestMoveResult {
-        TODO("not implemented")
-    }
+    fun undo(): TestMoveResult
 
-    fun redo(): TestMoveResult {
-        TODO("not implemented")
-    }
+    fun redo(): TestMoveResult
 
     fun getBoard(): TestBoard
 }
